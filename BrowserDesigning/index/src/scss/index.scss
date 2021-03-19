@@ -1,0 +1,12 @@
+@import '@modules';
+
+body {
+	 display: grid;
+	 display: flex;
+	 // background-color: red;
+}
+
+.her {
+	flex-wrap: wrap;
+	background-image: url('../../img/hello.png');
+}
