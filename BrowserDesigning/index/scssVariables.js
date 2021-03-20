@@ -1,4 +1,4 @@
-const variables = {
+ ({
     theme: null,
     url: 'https://github.com/giowe/gulp-sass-vars',
     font: {
@@ -10,6 +10,4 @@ const variables = {
     sizes: ['xs', 'sm', 'lg'],
     responsive: true,
     display: 'grid'
-  };
-
-module.exports = variables;
+})

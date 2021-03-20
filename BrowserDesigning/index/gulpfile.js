@@ -19,10 +19,16 @@ const gulpRename = require("gulp-rename");
 const browserSync = require('browser-sync').create();
 const gulpIf = require('gulp-if');
 const gulpIgnore = require('gulp-ignore');
-const fs = require('fs');
+const through2 = require('through2');
+const gulpFilter = require('gulp-filter');
+const imagemin = require('gulp-imagemin');
 
-const isDevelopmentMode = true;
-const scssVariables = require('./scssVariables.js');
+// Not supported plugins on my host currently
+// const webp = require('gulp-webp');
+// const imagemin2 = require('imagemin');
+// const imageminWebp = require('imagemin-webp');
+
+let isDevelopmentMode = true;
 const bootstrapCDN = 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css';
 
 function convertPreprocessorToNativeHTML() {
@@ -103,14 +109,24 @@ function convertPreprocessorToCssNativeStyles() {
 	.pipe(dest('dist/css/'))
 	.pipe(browserSync.stream());
 }
- 
+
+let scssVariables = {};
+
 function createScssVariables() {
-	return src('src/scss/variables/variables.scss')
+	const filter = gulpFilter(['scssVariables.js'], {restore: true});
+	return src(['src/scss/variables/variables.scss','scssVariables.js'])
+	.pipe(filter)
+	.pipe(through2.obj(function(file, _, cb) {
+		const content = file._contents.toString();
+		scssVariables = eval(content);
+		cb(null);
+	}))
+	.pipe(filter.restore)
 	.pipe(gulpSassVars(scssVariables, {
 		verbose: isDevelopmentMode
 	}))
 	.pipe(dest('src/scss/variables/', {
-		append: true
+		overwrite: true
 	}));
 }
 
@@ -133,14 +149,76 @@ function browserAutoReload() {
 	watcher();
 }
 
+
 function watcher() {
 	watch(['src/index.pug','src/pugIncludes/**/*.pug'],convertPreprocessorToNativeHTML).on('change', browserSync.reload);
 	watch('src/scss/**/*.scss',convertPreprocessorToCssNativeStyles);
-	//watch('scssVariables.js',createScssVariables);
+	watch('scssVariables.js',createScssVariables);
+	watch('src/img/**/*',optimizeImages);
 }
+
+function optimizeImages() {
+	return src('src/img/**/*')
+	.pipe(imagemin([
+    imagemin.gifsicle({interlaced: true}),
+    imagemin.mozjpeg({quality: 75, progressive: true}),
+    imagemin.optipng({optimizationLevel: 5}),
+    imagemin.svgo({
+        plugins: [
+            {removeViewBox: true},
+            {cleanupIDs: false}
+        ]
+    })
+	]))
+	.pipe(dest('dist/img/'));
+}
+
+function cleanDistFolder() {
+	return src('dist/', {
+		read: false
+	})
+	.pipe(gulpClean())
+	.pipe(dest('dist'));
+}
+
+function checkDevMode(cb) {
+	isDevelopmentMode = false;
+	cb();
+}
+
+// Not supported on my host plugins currently
+
+// async function  convertToWebp() {
+// 	await imagemin2(['src/img/**/*'], {
+// 		destination: 'dist/img/',
+// 		plugins: [
+// 			imageminWebp({quality: 50})
+// 		]
+// 	});
+// 	console.log('Images optimized');
+// }
 
 module.exports.html = convertPreprocessorToNativeHTML;
 module.exports.css = convertPreprocessorToCssNativeStyles;
 module.exports.create = createScssVariables;
 module.exports.libs = importExternalFrameworks;
 module.exports.browse = browserAutoReload;
+module.exports.img = optimizeImages;
+module.exports.clean = cleanDistFolder;
+module.exports.mode = checkDevMode;
+
+module.exports.dev = series(
+	cleanDistFolder,
+	series(createScssVariables,parallel(convertPreprocessorToCssNativeStyles,importExternalFrameworks)),
+	optimizeImages,
+	convertPreprocessorToNativeHTML,
+	browserAutoReload
+);
+
+module.exports.build = series(
+	checkDevMode,
+	cleanDistFolder,
+	series(createScssVariables,parallel(convertPreprocessorToCssNativeStyles,importExternalFrameworks)),
+	optimizeImages,
+	convertPreprocessorToNativeHTML
+);
