@@ -22,6 +22,10 @@ const gulpIgnore = require('gulp-ignore');
 const through2 = require('through2');
 const gulpFilter = require('gulp-filter');
 const imagemin = require('gulp-imagemin');
+const cleanCSS = require('gulp-clean-css');
+const ttf2woff2 = require('gulp-ttf2woff2');
+const fileinclude = require('gulp-file-include');
+const uncommentIt = require('gulp-uncomment-it');
 
 // Not supported plugins on my host currently
 // const webp = require('gulp-webp');
@@ -32,14 +36,15 @@ let isDevelopmentMode = true;
 const bootstrapCDN = 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css';
 
 function convertPreprocessorToNativeHTML() {
-	const injectedCss = src('dist/css/*.css',{
+	const injectedFiles = src(['dist/css/*.css'],{
 		read: false
 	});
 	return src('src/index.pug')
 	.pipe(gulpPug({
 		verbose: isDevelopmentMode
 	}))
-	.pipe(gulpInject(injectedCss, {
+	.pipe(gulpInject(injectedFiles, {
+		removeTags: true,
 		transform: function (filepath) {
 			let correctFilePath = filepath.replace(/\/dist\//i,'');
 			let neededFilesRegExp = /[.]css/;
@@ -55,6 +60,11 @@ function convertPreprocessorToNativeHTML() {
 			return gulpInject.transform.apply(gulpInject.transform, arguments);
 		}
 	}))
+	.pipe(gulpIf(!isDevelopmentMode,uncommentIt()))
+	.pipe(gulpIf(!isDevelopmentMode,fileinclude({
+		prefix: '@@',
+      	basepath: './'
+	})))
 	.pipe(gulpRemoveHtmlComments())
 	.pipe(gulpReplaceImageSrc({
 		prependSrc: 'img/',
@@ -104,6 +114,7 @@ function convertPreprocessorToCssNativeStyles() {
       prepend: '../img/',
 	}))
 	.pipe(gulpPostcss(plugins))
+	.pipe(gulpIf(!isDevelopmentMode, cleanCSS()))
 	.pipe(gulpSourcemaps.write('.'))
 	.pipe(gulpIf(!isDevelopmentMode,gulpIgnore.exclude(ignoreCondition)))
 	.pipe(dest('dist/css/'))
@@ -138,7 +149,6 @@ function importExternalFrameworks() {
 	.pipe(dest('dist/css/'));
 }
 
-
 function browserAutoReload() {
 	browserSync.init({
 		server: {
@@ -148,7 +158,6 @@ function browserAutoReload() {
 	});
 	watcher();
 }
-
 
 function watcher() {
 	watch(['src/index.pug','src/pugIncludes/**/*.pug'],convertPreprocessorToNativeHTML).on('change', browserSync.reload);
@@ -171,6 +180,13 @@ function optimizeImages() {
     })
 	]))
 	.pipe(dest('dist/img/'));
+}
+
+function convertFonts() {
+	return src('src/fonts/*.ttf')
+	.pipe(dest('dist/font/ttf'))
+	.pipe(ttf2woff2())
+	.pipe(dest('dist/font/woff2'));
 }
 
 function cleanDistFolder() {
@@ -206,6 +222,7 @@ module.exports.browse = browserAutoReload;
 module.exports.img = optimizeImages;
 module.exports.clean = cleanDistFolder;
 module.exports.mode = checkDevMode;
+module.exports.fonts = convertFonts;
 
 module.exports.dev = series(
 	cleanDistFolder,

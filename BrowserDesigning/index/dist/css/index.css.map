@@ -1,0 +1,1 @@
+{"version":3,"sources":["index.css"],"names":[],"mappings":"AAAA;EACE,aAAa;EACb,oBAAa;EAAb,oBAAa;EAAb,aAAa;AACf;;AAEA;EACE,mBAAe;MAAf,eAAe;EACf,yCAAyC;AAC3C","file":"index.css","sourcesContent":["body {\n  display: grid;\n  display: flex;\n}\n\n.her {\n  flex-wrap: wrap;\n  background-image: url(\"../img/hello.png\");\n}"]}
