@@ -26,6 +26,8 @@ const cleanCSS = require('gulp-clean-css');
 const ttf2woff2 = require('gulp-ttf2woff2');
 const fileinclude = require('gulp-file-include');
 const uncommentIt = require('gulp-uncomment-it');
+const file = require('gulp-file');
+const fs = require('fs');
 
 // Not supported plugins on my host currently
 // const webp = require('gulp-webp');
@@ -34,6 +36,7 @@ const uncommentIt = require('gulp-uncomment-it');
 
 let isDevelopmentMode = true;
 const bootstrapCDN = 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css';
+let scssVariables = {};
 
 function convertPreprocessorToNativeHTML() {
 	const injectedFiles = src(['dist/css/*.css'],{
@@ -121,25 +124,38 @@ function convertPreprocessorToCssNativeStyles() {
 	.pipe(browserSync.stream());
 }
 
-let scssVariables = {};
 
 function createScssVariables() {
+	let fileContent = '';
 	const filter = gulpFilter(['scssVariables.js'], {restore: true});
-	return src(['src/scss/variables/variables.scss','scssVariables.js'])
+	return src(['scssVariables.js'])
 	.pipe(filter)
 	.pipe(through2.obj(function(file, _, cb) {
 		const content = file._contents.toString();
 		scssVariables = eval(content);
-		cb(null);
+		cb();
 	}))
 	.pipe(filter.restore)
+	.pipe(file('src/scss/variables/buffered_variables.scss', fileContent, { src: true }))
 	.pipe(gulpSassVars(scssVariables, {
 		verbose: isDevelopmentMode
 	}))
-	.pipe(dest('src/scss/variables/', {
+	.pipe(gulpRename({ basename: 'variables'}))
+	.pipe(dest('.'), {
 		overwrite: true
-	}));
+	});
 }
+
+function preCompiling(cb) {
+	try {
+		const data = fs.readFileSync('scssVariables.js', 'utf8');
+		scssVariables = eval(data);
+	  } catch (err) {
+		console.error(err);
+	  }
+	cb();
+}
+
 
 function importExternalFrameworks() {
 	let commonPath = 'src/libs/bootstrap4.4/'
@@ -162,7 +178,7 @@ function browserAutoReload() {
 function watcher() {
 	watch(['src/index.pug','src/pugIncludes/**/*.pug'],convertPreprocessorToNativeHTML).on('change', browserSync.reload);
 	watch('src/scss/**/*.scss',convertPreprocessorToCssNativeStyles);
-	watch('scssVariables.js',createScssVariables);
+	watch('scssVariables.js',series(preCompiling,createScssVariables));
 	watch('src/img/**/*',optimizeImages);
 }
 
@@ -216,12 +232,11 @@ function checkDevMode(cb) {
 
 module.exports.html = convertPreprocessorToNativeHTML;
 module.exports.css = convertPreprocessorToCssNativeStyles;
-module.exports.create = createScssVariables;
+module.exports.create = series(preCompiling,createScssVariables);
 module.exports.libs = importExternalFrameworks;
 module.exports.browse = browserAutoReload;
 module.exports.img = optimizeImages;
 module.exports.clean = cleanDistFolder;
-module.exports.mode = checkDevMode;
 module.exports.fonts = convertFonts;
 
 module.exports.dev = series(

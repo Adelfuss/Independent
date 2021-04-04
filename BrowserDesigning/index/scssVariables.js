@@ -1,4 +1,4 @@
- ({
+({
     theme: null,
     url: 'https://github.com/giowe/gulp-sass-vars',
     font: {
@@ -8,6 +8,7 @@
       'line-height': 1.5
     },
     sizes: ['xs', 'sm', 'lg'],
-    responsive: true,
-    display: 'grid'
+    display: 'flex',
+    dev: true,
+    cool: 'yes'
 })
