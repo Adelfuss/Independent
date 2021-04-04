@@ -1,13 +1,20 @@
+@font-face {
+  font-family: 'Roboto-Thin';
+  src: url("http://localhost:3000/img/Roboto-Thin.woff2");
+}
+
 body {
   display: grid;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  background-image: url("http://localhost:3000/img/pexels-nathan-cowley-1300402.jpg");
+  font-family: 'Roboto-Thin';
 }
 
 .her {
   -ms-flex-wrap: wrap;
       flex-wrap: wrap;
-  background-image: url("../img/hello.png");
+  background-image: url("http://localhost:3000/img/pexels-nathan-cowley-1300402.jpg");
 }
 /*# sourceMappingURL=index.css.map */

@@ -1,12 +1,19 @@
 //@import '@modules';
 
+@font-face {
+    font-family: 'Roboto-Thin';
+    src: url('../../fonts/Roboto-Thin.woff2');
+}
+
 body {
 	 display: grid;
 	 display: flex;
+	 background-image: url('../../img/pexels-nathan-cowley-1300402.jpg');
+	 font-family: 'Roboto-Thin';
 	 // background-color: red;
 }
 
 .her {
 	flex-wrap: wrap;
-	background-image: url('../../img/hello.png');
+	background-image: url('../../img/pexels-nathan-cowley-1300402.jpg');
 }

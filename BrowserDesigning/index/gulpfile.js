@@ -110,11 +110,13 @@ function convertPreprocessorToCssNativeStyles() {
 	}))
 	.pipe(gulpModifyCssUrls({
 		modify(url, filePath) {
-      	let correctUrl = url.replace(/([.]{2}\/)?[.]{2}\/img\//mi,'');
+      	let correctUrl = url.replace(/([.]{2}\/)?[.]{2}\/(img)?(fonts)?\//mi,'');
       	console.log(correctUrl,filePath);
-        return correctUrl;
-      	},
-      prepend: '../img/',
+		if (correctUrl.includes('.ttf')) {
+			return `http://localhost:3000/fonts/${correctUrl}`; 
+		}
+		return `http://localhost:3000/img/${correctUrl}`;
+      	}
 	}))
 	.pipe(gulpPostcss(plugins))
 	.pipe(gulpIf(!isDevelopmentMode, cleanCSS()))
@@ -200,9 +202,8 @@ function optimizeImages() {
 
 function convertFonts() {
 	return src('src/fonts/*.ttf')
-	.pipe(dest('dist/font/ttf'))
 	.pipe(ttf2woff2())
-	.pipe(dest('dist/font/woff2'));
+	.pipe(dest('dist/fonts/'));
 }
 
 function cleanDistFolder() {
@@ -243,6 +244,7 @@ module.exports.dev = series(
 	cleanDistFolder,
 	series(createScssVariables,parallel(convertPreprocessorToCssNativeStyles,importExternalFrameworks)),
 	optimizeImages,
+	convertFonts,
 	convertPreprocessorToNativeHTML,
 	browserAutoReload
 );
@@ -252,5 +254,6 @@ module.exports.build = series(
 	cleanDistFolder,
 	series(createScssVariables,parallel(convertPreprocessorToCssNativeStyles,importExternalFrameworks)),
 	optimizeImages,
+	convertFonts,
 	convertPreprocessorToNativeHTML
 );
