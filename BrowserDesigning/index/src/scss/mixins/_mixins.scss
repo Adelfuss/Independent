@@ -1,0 +1,43 @@
+@mixin font($family,$size: 1,$weight : 500,$style: normal) {
+    font: {
+        family: $family;
+        size: ($fontRatio * $size);
+        weight: $weight;
+        style: $style;
+    }
+}
+
+@mixin text($map) {
+    @each $key, $value in $map {
+        text-#{$key}: $value;
+    }
+}
+
+@mixin border($borderOptions, $radious) {
+    border: $borderOptions;
+    border-radius: $radious;
+}
+
+@mixin lastChild($el, $margin: 0, $side: '') {
+    $marginName: null;
+    @if $side == '' {
+        $marginName: 'margin';
+    }
+    @else {
+        $marginName: 'margin-' + $side;
+    }
+    @debug $el;
+    &__#{$el} {
+        #{$marginName}: $margin;
+    }
+
+    &__#{$el}:last-child {
+        #{$marginName}: 0;
+    }
+}
+
+@mixin background($map) {
+    @each $key, $value in $map {
+        background-#{$key}: $value;
+    }
+}

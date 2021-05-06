@@ -1,0 +1,16 @@
+section.category 
+    div.container 
+        ul.category__main.row
+            each key, value in mainCategories
+                +listItem(value, key)(class=['category__main-item', 'col-auto'])
+        h3.category__h3
+            span.category__header Популярні хештеги
+            div.category__img
+        ul.category__hashtag.row 
+            each key, value in hashtagList
+                +listItem(value,key)(class=['category__hashtag-item', 'col-auto'])
+
+
+                                    
+
+

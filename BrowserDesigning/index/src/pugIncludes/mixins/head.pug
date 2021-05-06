@@ -1,0 +1,11 @@
+mixin head(title)
+    meta(name="viewport" content=attributes.viewport)
+    meta(charset= attributes.charset)
+    meta(name="author" content= attributes.author)
+    meta(name="keywords" content= attributes.keywords)
+    meta(name="description" content= attributes.description)
+    title= title
+    link(rel="icon" href="img/logo/indepentent_logo.svg" type="image/svg+xml")
+    //@@include_once('./productionFontLinks.html')
+    //inject:css
+    //endinject

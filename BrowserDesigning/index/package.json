@@ -1,5 +1,5 @@
 {
-  "name": "indexPage",
+  "name": "independent",
   "version": "1.0.0",
   "description": "Creating index.html with styles and other resources for Independent Project",
   "main": "gulpfile.js",

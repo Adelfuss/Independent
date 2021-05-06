@@ -1,2 +1,12 @@
-h1 Hello World
-//img(src="../../img/insta/instagram.svg")
+header.header
+    div.container
+        div.header__helper.row
+            div.col-3
+                img.logo(src="../../img/logo/indepentent_logo.svg")
+            div.col-9
+                nav.header__nav 
+                    menu.header__menu.row
+                        each value, key in headerMenu
+                            +listItem(key,value)(class=['header__item', 'col-auto'])
+        
+            

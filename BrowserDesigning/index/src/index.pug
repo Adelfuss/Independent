@@ -1,11 +1,13 @@
 html
-	head
-		//@@include_once('./productionFontLinks.html')
-		//inject:css
-		//endinject
+	// include variables.pug file with app variables
+	include /variables/variables.pug
+	include /functions/functions.pug
+	include /mixins/head.pug
+	include /mixins/mixins.pug
+	+head(meta.index.title)(viewport= viewportWidth charset= siteCharset author= authorName keywords= createKeywordString(meta.index.keywords)  description= meta.index.description)
 	body
-		include ./pugIncludes/modules/header.pug
-		img(src="../img/facebook.png")
-		img(src="../img/insta/instagram.svg")
-		div Some Text
-		p Some Paragraph
+		div.wrapper
+			include /modules/header.pug
+			include /modules/categories.pug
+
+		

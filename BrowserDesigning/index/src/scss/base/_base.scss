@@ -1,0 +1,20 @@
+@each $key, $value in $fonts {
+    @font-face {
+        font-family: $key;
+        src: url($value) format('woff2');
+    }
+}
+.wrapper {
+    min-height: 100%;
+    max-width: 100%;
+}
+
+ul, menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.col, .col-auto {
+    padding: 0;
+}

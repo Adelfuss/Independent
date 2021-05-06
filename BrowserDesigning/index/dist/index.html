@@ -1,14 +1,60 @@
+<!DOCTYPE html>
 <html>
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <meta name="author" content="Bohdan Lyhoshapko">
+    <meta name="keywords" content="main,actual news,recent news,hashtags,popular news,universities">
+    <meta name="description" content="Description of index page of Independent">
+    <title>indexPage</title>
+    <link rel="icon" href="img/logo/indepentent_logo.svg" type="image/svg+xml">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/index.css">
 </head>
 
 <body>
-    <h1>Hello World</h1><img src="img/facebook.png"><img src="img/instagram.svg">
-    <div>Some Text</div>
-    <p>Some Paragraph</p>
+    <div class="wrapper">
+        <header class="header">
+            <div class="container">
+                <div class="header__helper row">
+                    <div class="col-3"><img class="logo" src="img/../../img/logo/indepentent_logo.svg"></div>
+                    <div class="col-9">
+                        <nav class="header__nav">
+                            <menu class="header__menu row">
+                                <li class="header__item col-auto"><a class="header__item-link" href="about">Про нас</a></li>
+                                <li class="header__item col-auto"><a class="header__item-link" href="team">Команда</a></li>
+                                <li class="header__item col-auto"><a class="header__item-link" href="register">Реєстрація</a></li>
+                                <li class="header__item col-auto"><a class="header__item-link" href="switch">Укр</a></li>
+                            </menu>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <section class="category">
+            <div class="container">
+                <ul class="category__main row">
+                    <li class="category__main-item col-auto"><a class="category__main-item-link" href="review">Огляд новин</a></li>
+                    <li class="category__main-item col-auto"><a class="category__main-item-link" href="education">Заклади освіти</a></li>
+                </ul>
+                <h3 class="category__h3"><span class="category__header">Популярні хештеги</span>
+                    <div class="category__img"></div>
+                </h3>
+                <ul class="category__hashtag row">
+                    <li class="category__hashtag-item col-auto"><a class="category__hashtag-item-link" href="#1">#first</a></li>
+                    <li class="category__hashtag-item col-auto"><a class="category__hashtag-item-link" href="#2">#second</a></li>
+                    <li class="category__hashtag-item col-auto"><a class="category__hashtag-item-link" href="#3">#third</a></li>
+                    <li class="category__hashtag-item col-auto"><a class="category__hashtag-item-link" href="#4">#fourth</a></li>
+                    <li class="category__hashtag-item col-auto"><a class="category__hashtag-item-link" href="#5">fifth</a></li>
+                    <li class="category__hashtag-item col-auto"><a class="category__hashtag-item-link" href="#6">sixth</a></li>
+                    <li class="category__hashtag-item col-auto"><a class="category__hashtag-item-link" href="#7">#seventh</a></li>
+                    <li class="category__hashtag-item col-auto"><a class="category__hashtag-item-link" href="#8">#eights</a></li>
+                    <li class="category__hashtag-item col-auto"><a class="category__hashtag-item-link" href="#9">#ninth</a></li>
+                </ul>
+            </div>
+        </section>
+    </div>
 </body>
 
 </html>

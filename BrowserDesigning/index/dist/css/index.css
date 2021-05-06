@@ -1,20 +1,196 @@
-@font-face {
-  font-family: 'Roboto-Thin';
-  src: url("http://localhost:3000/img/Roboto-Thin.woff2");
-}
-
+html,
 body {
-  display: grid;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  background-image: url("http://localhost:3000/img/pexels-nathan-cowley-1300402.jpg");
-  font-family: 'Roboto-Thin';
+  width: 100%;
+  height: 100%;
+  font-family: 'MyriadPro-Black';
 }
 
-.her {
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
-  background-image: url("http://localhost:3000/img/pexels-nathan-cowley-1300402.jpg");
+@font-face {
+  font-family: "Roboto-Thin";
+  src: url("http://localhost:3000/fonts/Roboto-Thin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Roboto-Regular";
+  src: url("http://localhost:3000/fonts/Roboto-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Roboto-Medium";
+  src: url("http://localhost:3000/fonts/Roboto-Medium.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Roboto-Light";
+  src: url("http://localhost:3000/fonts/Roboto-Light.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Roboto-Bold";
+  src: url("http://localhost:3000/fonts/Roboto-Bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "MyriadPro-Bold";
+  src: url("http://localhost:3000/fonts/MyriadPro-Bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "MyriadPro-Light";
+  src: url("http://localhost:3000/fonts/MyriadPro-Light.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "MyriadPro-Regular";
+  src: url("http://localhost:3000/fonts/MyriadPro-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "MyriadPro-SemiBold";
+  src: url("http://localhost:3000/fonts/MyriadPro-SemiBold.woff2") format("woff2");
+}
+
+.wrapper {
+  min-height: 100%;
+  max-width: 100%;
+}
+
+ul,
+menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.col,
+.col-auto {
+  padding: 0;
+}
+
+.category__main {
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  padding: 50px 0;
+}
+
+.category__main-item {
+  margin-right: 80px;
+}
+
+.category__main-item:last-child {
+  margin-right: 0;
+}
+
+.category__main-item-link {
+  color: black;
+  font-family: "Roboto-Regular";
+  font-size: 36px;
+  font-weight: 500;
+  font-style: normal;
+  text-decoration: none;
+  text-transform: uppercase;
+  border-bottom: 1px solid white;
+  -webkit-transition: border-bottom 0.4s;
+  transition: border-bottom 0.4s;
+}
+
+.category__main-item-link:hover {
+  text-decoration: none;
+  color: black;
+  border-bottom: 1px solid black;
+}
+
+.category__h3 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.category__header {
+  margin-right: 5px;
+  color: mediumblue;
+  font-family: "MyriadPro-SemiBold";
+  font-size: 24px;
+  font-weight: 500;
+  font-style: normal;
+  text-transform: uppercase;
+}
+
+.category__img {
+  width: 32px;
+  height: 32px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url("http://localhost:3000/img/hastag.png");
+}
+
+.category__header,
+.category__img {
+  display: inline-block;
+  vertical-align: baseline;
+}
+
+.category__hashtag {
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.category__hashtag-item {
+  margin-right: 40px;
+}
+
+.category__hashtag-item:last-child {
+  margin-right: 0;
+}
+
+.category__hashtag-item-link {
+  text-transform: uppercase;
+}
+
+.header {
+  background-color: black;
+}
+
+.header__helper {
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 45px 0;
+}
+
+.header__menu {
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+}
+
+.header__item {
+  margin-right: 90px;
+}
+
+.header__item:last-child {
+  margin-right: 0;
+}
+
+.header__item-link {
+  color: white;
+  font-family: "Roboto-Regular";
+  font-size: 16px;
+  font-weight: 500;
+  font-style: normal;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.header__item-link:hover {
+  color: white;
+  text-decoration: none;
+}
+
+.header__item-link_round {
+  padding: 8px 12px;
+  border: 1px solid white;
+  border-radius: 15px;
 }
 /*# sourceMappingURL=index.css.map */

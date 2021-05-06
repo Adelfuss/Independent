@@ -1,0 +1,30 @@
+.header {
+    background-color:$headerBg;
+
+    &__helper {
+        align-items: center;
+        padding: 45px 0;
+    }
+
+    &__menu {
+        justify-content: flex-end;
+    }
+
+    @include lastChild('item',90px, 'right');
+
+    &__item-link {
+        color: white;
+        @include font('Roboto-Regular');
+        @include text((transform : uppercase, decoration: none));
+    }
+
+    &__item-link:hover {
+        color: white;
+        @include text((decoration: none));
+    }
+
+    &__item-link_round {
+        padding: 8px 12px;
+        @include border((1px solid white), 15px);
+    }
+}

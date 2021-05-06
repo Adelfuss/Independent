@@ -37,6 +37,7 @@ const fs = require('fs');
 let isDevelopmentMode = true;
 const bootstrapCDN = 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css';
 let scssVariables = {};
+let pugVariables = {};
 
 function convertPreprocessorToNativeHTML() {
 	const injectedFiles = src(['dist/css/*.css'],{
@@ -44,7 +45,10 @@ function convertPreprocessorToNativeHTML() {
 	});
 	return src('src/index.pug')
 	.pipe(gulpPug({
-		verbose: isDevelopmentMode
+		verbose: isDevelopmentMode,
+		basedir: 'src/pugIncludes',
+		doctype: 'html',
+		globals: ['global']
 	}))
 	.pipe(gulpInject(injectedFiles, {
 		removeTags: true,
@@ -71,7 +75,7 @@ function convertPreprocessorToNativeHTML() {
 	.pipe(gulpRemoveHtmlComments())
 	.pipe(gulpReplaceImageSrc({
 		prependSrc: 'img/',
-		keepOrigin : false
+		keepOrigin : true
 	}))
 	.pipe(gulpBeautify.html({
 		indent_size: (isDevelopmentMode) ? 4 : 0,
@@ -81,6 +85,19 @@ function convertPreprocessorToNativeHTML() {
 	.pipe(dest('dist/'));
 }
  
+
+function compilePugVariables(cb) {
+	try {
+		const data = fs.readFileSync('pugVariables.js', 'utf8');
+		pugVariables = eval(data);
+		for(key in pugVariables) {
+			global[key] = pugVariables[key];
+		}
+	  } catch (err) {
+		console.error(err);
+	  }
+	cb();
+}
 
 function convertPreprocessorToCssNativeStyles() {
 	const plugins = [
@@ -95,7 +112,8 @@ function convertPreprocessorToCssNativeStyles() {
 		"@media_queries" : localPathTemplate + 'media_queries/**/*.scss',
 		"@mixins" : localPathTemplate + 'mixins/*.scss',
 		"@modules" : localPathTemplate + 'modules/*.scss',
-		"@variables" : localPathTemplate + 'variables/*.scss'
+		"@variables" : localPathTemplate + 'variables/*.scss',
+		"@base" : localPathTemplate + 'base/*.scss'
 	}))
 	.pipe(gulpSassGlob())
 	.pipe(gulpSassVariables({
@@ -110,9 +128,9 @@ function convertPreprocessorToCssNativeStyles() {
 	}))
 	.pipe(gulpModifyCssUrls({
 		modify(url, filePath) {
-      	let correctUrl = url.replace(/([.]{2}\/)?[.]{2}\/(img)?(fonts)?\//mi,'');
+		let correctUrl = url.replace(/([.]{2}\/){1,}?(img)?(fonts)?\//mi,'');
       	console.log(correctUrl,filePath);
-		if (correctUrl.includes('.ttf')) {
+		if (correctUrl.includes('.ttf') || correctUrl.includes('.woff2')) {
 			return `http://localhost:3000/fonts/${correctUrl}`; 
 		}
 		return `http://localhost:3000/img/${correctUrl}`;
@@ -134,7 +152,7 @@ function createScssVariables() {
 	.pipe(filter)
 	.pipe(through2.obj(function(file, _, cb) {
 		const content = file._contents.toString();
-		scssVariables = eval(content);
+		//scssVariables = eval(content);
 		cb();
 	}))
 	.pipe(filter.restore)
@@ -142,7 +160,7 @@ function createScssVariables() {
 	.pipe(gulpSassVars(scssVariables, {
 		verbose: isDevelopmentMode
 	}))
-	.pipe(gulpRename({ basename: 'variables'}))
+	.pipe(gulpRename({ basename: '_variables'}))
 	.pipe(dest('.'), {
 		overwrite: true
 	});
@@ -157,7 +175,6 @@ function preCompiling(cb) {
 	  }
 	cb();
 }
-
 
 function importExternalFrameworks() {
 	let commonPath = 'src/libs/bootstrap4.4/'
@@ -182,6 +199,7 @@ function watcher() {
 	watch('src/scss/**/*.scss',convertPreprocessorToCssNativeStyles);
 	watch('scssVariables.js',series(preCompiling,createScssVariables));
 	watch('src/img/**/*',optimizeImages);
+	watch('pugVariables.js', series(compilePugVariables, convertPreprocessorToNativeHTML));
 }
 
 function optimizeImages() {
@@ -219,6 +237,7 @@ function checkDevMode(cb) {
 	cb();
 }
 
+
 // Not supported on my host plugins currently
 
 // async function  convertToWebp() {
@@ -242,18 +261,18 @@ module.exports.fonts = convertFonts;
 
 module.exports.dev = series(
 	cleanDistFolder,
-	series(createScssVariables,parallel(convertPreprocessorToCssNativeStyles,importExternalFrameworks)),
+	series(preCompiling,createScssVariables,parallel(convertPreprocessorToCssNativeStyles,importExternalFrameworks)),
 	optimizeImages,
 	convertFonts,
-	convertPreprocessorToNativeHTML,
+	series(compilePugVariables,convertPreprocessorToNativeHTML),
 	browserAutoReload
 );
 
 module.exports.build = series(
 	checkDevMode,
 	cleanDistFolder,
-	series(createScssVariables,parallel(convertPreprocessorToCssNativeStyles,importExternalFrameworks)),
+	series(preCompiling,createScssVariables,parallel(convertPreprocessorToCssNativeStyles,importExternalFrameworks)),
 	optimizeImages,
 	convertFonts,
-	convertPreprocessorToNativeHTML
+	series(compilePugVariables,convertPreprocessorToNativeHTML)
 );
